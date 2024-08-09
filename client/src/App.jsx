@@ -1,6 +1,8 @@
-import React, { useState, lazy } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProtectRoute from '../protectRoute';
+import { HelmetProvider } from 'react-helmet-async';
+import { LayoutLoader } from './components/Loaders';
 
 const HomePage = lazy(() => import('./pages/Home'));
 const AuthPage = lazy(() => import('./pages/auth/Auth'));
@@ -10,7 +12,9 @@ const NotFound = lazy(()=> import("./pages/NotFound"))
 let user = true;
 const App = () => {
   return (
-    <Router>
+  <Suspense fallback={<LayoutLoader/>}>
+      <HelmetProvider>
+     <Router>
       <Routes>
         <Route element={<ProtectRoute  user={user}/>}>
           <Route path="/" element={
@@ -24,6 +28,8 @@ const App = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
+   </HelmetProvider>
+  </Suspense>
   );
 };
 

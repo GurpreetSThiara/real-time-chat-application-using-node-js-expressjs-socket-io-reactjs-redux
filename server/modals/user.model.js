@@ -1,3 +1,4 @@
+import { hash } from "bcrypt";
 import mongoose,  { model, Schema } from "mongoose";
 
 
@@ -39,5 +40,9 @@ const user = new Schema({
 
     timeseries:true
   })
-
+  user.pre("save",async function(next){
+    if(!this.isModified("password")) next();
+    this.password = await hash(this.password, 10)
+  })
+  
 export const User =mongoose.models.User || model("User",user)

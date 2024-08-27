@@ -8,7 +8,7 @@ import {
   Paper,
   Box,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useLoginMutation } from "../../redux/api/userSlice";
 import { reduxLogin } from "../../redux/reducers/auth";
 import toast from "react-hot-toast";
@@ -19,7 +19,7 @@ const Login = ({ setIsLogin }) => {
   const [formError, setError] = useState("");
   const navigate = useNavigate();
 
-  const [login, { isLoading, isError }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,9 +45,13 @@ const Login = ({ setIsLogin }) => {
     console.log(data);
 
     if (!error && !isLoading && data) {
-      // reduxLogin();
+      console.log("dvsdvsvsvfvsfvsvsfvf")
+       reduxLogin(data.user);
       toast.success(data.message);
       console.log(data);
+      navigate('/')
+      console.log("navigated not ")
+
     }
 
     if (!isLoading && data) {
@@ -57,9 +61,9 @@ const Login = ({ setIsLogin }) => {
     }
 
     if (error) {
-      console.log("hjjkjk");
+    
       console.log(error);
-      console.log("hjjkjk");
+     
       toast.error(error.data.message);
     }
   };

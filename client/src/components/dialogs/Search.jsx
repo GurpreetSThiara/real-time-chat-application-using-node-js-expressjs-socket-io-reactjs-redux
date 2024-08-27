@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -11,44 +11,70 @@ import {
   IconButton,
   InputAdornment,
   Box,
+  Avatar,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
+import { useLazySearchUsersQuery, useSendConnectionRequestMutation } from '../../redux/api/usersSlice';
 
-const sampleData = [
-  { id: 1, name: 'John Doe' },
-  { id: 2, name: 'Jane Smith' },
-  { id: 3, name: 'Emily Johnson' },
-  { id: 4, name: 'Michael Brown' },
-];
+import toast from "react-hot-toast";
+import useAsyncMutation from '../../hooks/useAsyncMutation';
 
-const Search = () => {
+
+const Search = ({onClose}) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  //const [isLoading , setIsLoading] = useState(false);
+  const [sendConnectionRequest , isLoading , data]= useAsyncMutation(useSendConnectionRequestMutation);
+  
+
+  const [searchUsers ] = useLazySearchUsersQuery();
+
+
 
   const handleSearch = (event) => {
     const value = event.target.value;
     setQuery(value);
 
-    if (value.trim()) {
-      const filteredResults = sampleData.filter((item) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setResults(filteredResults);
-    } else {
-      setResults([]);
-    }
+   
   };
 
   const handleClose = () => {
-    setQuery('');
-    setResults([]);
+    onClose();
+   // setQuery('');
+    //setResults([]);
   };
 
-  const handleSendRequest = (name) => {
-    alert(`Message request sent to ${name}`);
+  const handleSendRequest =async (id) => {
+    await sendConnectionRequest("sending connection request",{userId:id});
+ 
   };
+
+  useEffect(()=>{
+
+      const timeOut = setTimeout(()=>{
+     
+        searchUsers(query).then((res)=> {
+          setResults(res.data.users);
+          console.log(res.data)
+       
+        }).catch((e)=>{
+            console.log("error")
+            console.log("error")
+            console.log("error")
+            console.log("error")
+            console.log(e)
+        
+
+        });
+      },2000);
+
+      return () => {
+        clearTimeout(timeOut);
+      }
+      
+  },[query])
 
   return (
     <Dialog open onClose={handleClose} fullWidth maxWidth="sm">
@@ -79,16 +105,17 @@ const Search = () => {
           }}
         />
         <List>
-          {results.length > 0 ? (
+          {results?.length > 0 ? (
             results.map((item) => (
-              <ListItem key={item.id}>
+              <ListItem key={item._id}>
+                <Avatar src={item.avatar}/>
                 <ListItemText primary={item.name} />
                 <Box ml={2}>
                   <Button
                     variant="contained"
                     color="primary"
                     startIcon={<SendIcon />}
-                    onClick={() => handleSendRequest(item.name)}
+                    onClick={() => handleSendRequest(item._id)}
                   >
                     Send Request
                   </Button>
@@ -97,7 +124,10 @@ const Search = () => {
             ))
           ) : (
             <ListItem>
-              <ListItemText primary="No results found" />
+              {isLoading?  <ListItemText primary="Loading" />:              <ListItemText primary="No users" />
+
+}
+              
             </ListItem>
           )}
         </List>

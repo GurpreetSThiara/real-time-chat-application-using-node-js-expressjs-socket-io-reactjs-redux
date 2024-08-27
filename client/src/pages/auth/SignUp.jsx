@@ -2,13 +2,19 @@ import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, Paper, Box, Link, IconButton, Avatar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { CameraAlt, Image, FileUpload } from '@mui/icons-material';
+import { useRegisterMutation } from '../../redux/api/userSlice';
+import toast from 'react-hot-toast';
 
 const SignUp = ({setIsLogin}) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [bio, setBio] = useState('');
   const [avatar, setAvatar] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [register, { isLoading }] = useRegisterMutation();
+
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Hook for navigation
 
@@ -20,11 +26,14 @@ const SignUp = ({setIsLogin}) => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setAvatar(URL.createObjectURL(file)); // Create a URL for the selected file
+      setAvatarFile(file)
+      setAvatar(URL.createObjectURL(file));
+      console.log(URL.createObjectURL(file))
+      // Create a URL for the selected file
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
 
     if (!email || !password || !confirmPassword || !bio) {
@@ -32,10 +41,10 @@ const SignUp = ({setIsLogin}) => {
       return;
     }
     
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
+    // if (!validateEmail(email)) {
+    //   setError('Please enter a valid email address.');
+    //   return;
+    // }
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters long.');
@@ -47,19 +56,50 @@ const SignUp = ({setIsLogin}) => {
       return;
     }
 
+    const formData = new FormData();
+formData.append('username', email);
+formData.append('password', password);
+formData.append('bio', bio);
+formData.append('name', name);
+if (avatarFile) {
+formData.append('avatar', avatar.file);
+}
+
+console.log(formData)
+
     // Handle sign-up logic here
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Bio:', bio);
     console.log('Avatar:', avatar);
 
-    // Clear form and error if sign-up is successful
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setBio('');
-    setAvatar(null);
-    setError('');
+    try {
+      const {data , error} = await register({
+      bio:bio,password:password,name:name,avatar:avatar.file
+      });
+
+      if(data){
+        console.log('User registered successfully:', data);
+        toast.success(data.message)
+      }
+
+      if(error){
+        console.log('User not registered:', error);
+        toast.success(error.message)
+      }
+   
+      //navigate('/dashboard');
+    }catch(e){
+      console.log('Error registering user:', e);
+    }
+
+    // // Clear form and error if sign-up is successful
+    // setEmail('');
+    // setPassword('');
+    // setConfirmPassword('');
+    // setBio('');
+    // setAvatar(null);
+    // setError('');
   };
 
   const handleLoginRedirect = () => {
@@ -154,6 +194,18 @@ const SignUp = ({setIsLogin}) => {
             onChange={(e) => setEmail(e.target.value)}
             error={!validateEmail(email) && email !== ''}
             helperText={!validateEmail(email) && email !== '' ? 'Invalid email address' : ''}
+          />
+            <TextField
+            label="Name"
+            margin="normal"
+            required
+            fullWidth
+            autoComplete="name"
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            error={name !== ''}
+            helperText={ name !== '' ? 'please enter name' : ''}
           />
           <TextField
             label="Password"

@@ -8,6 +8,7 @@ export const baseQuery = fetchBaseQuery({
 
 export const apiSlice = createApi({
   baseQuery,
+  tagTypes:["Chat" , "User"],
 
   endpoints: () => ({}),
 });

@@ -12,6 +12,8 @@ const authSlice = createSlice({
         //     ta
         // },
         reduxLogin: (state, action) => {
+            console.log("action.payload")
+            console.log(action.payload)
             state.user = action.payload;
             state.isLoading = false;
         },

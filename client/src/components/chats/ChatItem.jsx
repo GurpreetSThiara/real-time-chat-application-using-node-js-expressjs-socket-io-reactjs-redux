@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import colors from '../../../constants/colors';
 
 const ChatItem = ({
-  avatar = '',       // Default to empty string if no avatar is provided
+  avatar,       // Default to empty string if no avatar is provided
   name = 'Unknown', // Default name if not provided
   _id,
   LastMessage = '', // Default to empty string if no last message is provided
@@ -46,7 +46,7 @@ const ChatItem = ({
         {/* Avatar */}
         {/* */}
         <Avatar
-          src={avatar}
+          src={avatar.url}
           alt={name}
           sx={{
             width: 40,

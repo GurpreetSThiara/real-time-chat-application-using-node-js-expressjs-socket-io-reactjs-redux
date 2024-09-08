@@ -37,6 +37,7 @@ const Search = ({onClose}) => {
     const value = event.target.value;
     setQuery(value);
 
+    
    
   };
 

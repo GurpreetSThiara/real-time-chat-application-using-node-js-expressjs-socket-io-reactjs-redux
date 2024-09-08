@@ -2,7 +2,7 @@ import { Stack, Typography, Avatar, Box, IconButton } from '@mui/material';
 import React, { memo } from 'react';
 import { Link } from '../styles/StyledComponents';
 import DeleteIcon from '@mui/icons-material/Delete';
-import colors from '../../../constants/colors';
+import colors from '../../constants/colors';
 
 const ChatItem = ({
   avatar,       // Default to empty string if no avatar is provided

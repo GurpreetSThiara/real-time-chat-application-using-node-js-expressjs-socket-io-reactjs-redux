@@ -3,6 +3,7 @@ import { Avatar, Box, Typography, Button, Paper, Stack } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { styled } from '@mui/material/styles';
 import moment from 'moment/moment';
+import { useSelector } from 'react-redux';
 
 const ProfileContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -32,17 +33,21 @@ const EditButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const Profile = ({ name = "User Name", bio = "This is the user bio.", avatarUrl = "" }) => {
+const Profile = () => {
+  const user = useSelector((state) => state.auth.user);
+  console.log(user)
+
+
     const hardCodedDate = '2023-05-01T12:34:56Z';  // Hard-coded sample date
-    const formattedDate = moment(hardCodedDate).fromNow(); 
+    const formattedDate = moment(user.createdAt ||hardCodedDate ).fromNow(); 
   return (
   <Stack height={'100%'} border={'1px solid'}>
 
 <ProfileContainer>
       <AvatarContainer>
         <Avatar
-          alt={name}
-          src={avatarUrl || "/default-avatar.png"}
+          alt={user.name || "Name"}
+          src={user.avatar.url || "/default-avatar.png"}
           sx={{ width: 100, height: 100 }}
         />
         <EditButton
@@ -54,10 +59,10 @@ const Profile = ({ name = "User Name", bio = "This is the user bio.", avatarUrl 
         </EditButton>
       </AvatarContainer>
       <Typography variant="h5" component="h1" gutterBottom>
-        {name}
+        {user.name || "Name"}
       </Typography>
       <Typography variant="body1" color="textSecondary" paragraph>
-        {bio}
+        {user.bio || "Bio"}
       </Typography>
       <Typography variant="body2" color="textSecondary">
         Profile created {formattedDate}

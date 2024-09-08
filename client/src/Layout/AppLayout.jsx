@@ -4,12 +4,14 @@ import { Box, Typography, Link, IconButton, Grid, Drawer } from '@mui/material';
 import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
 import Header from '../components/Header/Header';
 import Title from '../components/shared/Title';
-import colors from '../../constants/colors';
+import colors from '../constants/colors';
 import ChatList from '../components/chats/ChatList';
 import Profile from '../components/profile/Profile';
 import { useChatsQuery } from '../redux/api/chatSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsMobile } from '../redux/reducers/deviceSlice';
+import { getSocket } from '../socket';
+import { useParams } from 'react-router';
 
 const AppLayout = () => (WrappedComponent) => {
 
@@ -23,6 +25,8 @@ const AppLayout = () => (WrappedComponent) => {
         avatar:["https://www.w3schools.com/howto/img_avatar.png"],name:"tom",_id:"2",groupChat:false, members:["1","2"],}
     ]
   return (props) => {
+    const params = useParams();
+    const chatId = params.chatId;
 
     const dispatch = useDispatch();
     const {isMobile} = useSelector((state)=>state.device)
@@ -30,6 +34,10 @@ const AppLayout = () => (WrappedComponent) => {
     const handleMobileClose = () => {
       dispatch(setIsMobile(false));
     }
+
+    const socket = getSocket()
+    console.log(socket)
+
   
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -43,7 +51,7 @@ const AppLayout = () => (WrappedComponent) => {
            <ChatList w="70vw" chats={sampleChats}/>
            </Drawer>
             <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"} sx={{display:{xs:"block",sm:"block"}}}  p={3}>
-                <WrappedComponent {...props} />
+                <WrappedComponent {...props} socket={socket} chatId={chatId} />
                 ssssssssss
                 </Grid>
 

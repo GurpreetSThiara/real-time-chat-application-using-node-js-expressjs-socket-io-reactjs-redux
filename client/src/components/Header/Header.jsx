@@ -3,10 +3,10 @@ import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Box, TextField
 import { Menu as MenuIcon, AccountCircle, Notifications, MoreVert, Search, GroupAdd, TurnLeftOutlined } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import colors from '../../../constants/colors';
+import colors from '../../constants/colors';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
-import { server } from '../../../constants/config';
+import { server } from '../../constants/config';
 import { useDispatch, useSelector } from 'react-redux';
 import { reduxLogout } from '../../redux/reducers/auth';
 import toast from 'react-hot-toast';
@@ -62,6 +62,10 @@ const Header = () => {
         setGroupChatOpen(false);
     };
 
+    const handleNotificationClose = () => {
+        setNotificationsOpen(false);
+    }
+
     const menuId = 'primary-search-account-menu';
     const mobileMenuId = 'primary-search-account-menu-mobile';
 
@@ -108,8 +112,8 @@ const Header = () => {
                 {!isMobile && (
                     <Box sx={{ display: 'flex' }}>
                         <CustomIconButton icon={  <Search />} onClick={handleSearchOpen} title={"search"} />
-                        <CustomIconButton icon={    <GroupAdd />} onClick={handleGroupChatOpen} title={"new group"} />
-                        <CustomIconButton icon={    <Notifications />} onClick={handleSearchOpen} title={"notifications"} />
+                        <CustomIconButton icon={  <GroupAdd />} onClick={handleGroupChatOpen} title={"new group"} />
+                        <CustomIconButton icon={ <Notifications />} onClick={()=>{setNotificationsOpen(true)}} title={"notifications"} />
                      
                     
                       
@@ -163,7 +167,7 @@ const Header = () => {
 
 { notificationsOpen && (
                 <Suspense fallback={<div>...</div>}>
-                    <NotificationsDialog />
+                    <NotificationsDialog onClose={handleNotificationClose} />
                 </Suspense>
             )}
 

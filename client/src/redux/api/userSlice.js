@@ -1,4 +1,4 @@
-import { server } from "../../../constants/config";
+import { server } from "../../constants/config";
 import { apiSlice } from "./apiSlice";
 
 export const userSlice = apiSlice.injectEndpoints({
@@ -43,9 +43,26 @@ export const userSlice = apiSlice.injectEndpoints({
       extraOptions:{
         credentials:'include'
       }
+    }),
+
+    getMyNotifications:builder.query({
+      query:()=>({
+          url:'/api/v1/user/notifications',
+          credentials:'include'
+      }),
+      keepUnusedDataFor:0
+    }),
+
+    acceptRequest: builder.mutation({
+      query:(body)=>({
+        url:'/api/v1/user/acceptrequest',
+        method:'PUT',
+        credentials:'include',
+        body:body
+    })
     })
   }),
 });
 
-export const { useGetProfileQuery, useLoginMutation, useRegisterMutation } =
+export const { useGetProfileQuery, useLoginMutation, useRegisterMutation , useGetMyNotificationsQuery , useAcceptRequestMutation} =
   userSlice;

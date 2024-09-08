@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { reduxLogin } from './redux/reducers/auth';
+import { SocketProvider } from './socket';
 
 const HomePage = lazy(() => import('./pages/Home'));
 const AuthPage = lazy(() => import('./pages/auth/Auth'));
@@ -54,7 +55,12 @@ const App = () => {
           {!isFetching && (
             <Router>
               <Routes>
-                <Route element={<ProtectRoute user={user} />}>
+              
+                <Route element={
+                    <SocketProvider>
+                         <ProtectRoute user={user} />
+                    </SocketProvider>
+                 }>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/chat/:id" element={<ChatPage />} />
                   <Route path="/groups" element={<GroupsPage />} />

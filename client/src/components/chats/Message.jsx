@@ -2,8 +2,13 @@ import React, { memo } from 'react';
 import { Box, Typography, Avatar, Paper } from '@mui/material';
 import { fileFormat } from '../../lib/features';
 import AttachmentDisplay from '../dialogs/AttachmentDisplay';
+import { useSelector } from 'react-redux';
 
-const Message = ({ message,user }) => {
+const Message = ({ message }) => {
+  const user = useSelector((state) => state.auth.user)
+
+  const {sender, content, attachments = [] , createdAt} = message;
+  const sameSender = sender?._id === user?._id;
   return (
     <Box 
       sx={{ 

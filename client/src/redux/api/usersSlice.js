@@ -1,5 +1,5 @@
 
-import { server } from "../../../constants/config";
+import { server } from "../../constants/config";
 import { apiSlice } from "./apiSlice";
 
 export const usersSlice = apiSlice.injectEndpoints({
